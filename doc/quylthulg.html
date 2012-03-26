@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- encoding: UTF-8 -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>The Quylthulg Programming Language</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <!-- begin html doc dynamic markup -->
+  <script type="text/javascript" src="/contrib/jquery-1.6.4.min.js"></script>
+  <script type="text/javascript" src="/scripts/documentation.js"></script>
+  <!-- end html doc dynamic markup -->
+</head>
+<body>
+
+<h1>The Quylthulg Programming Language</h1>
+
+<h2>Overview</h2>
+
+<p>Here is what is known about the programming language <dfn>Quylthulg</dfn>.  Quylthulg:</p>
+
+<ul>
+<li>is a programming language;</li>
+<li>is named Quylthulg;</li>
+<li>was designed by Chris Pressey;</li>
+<li>does <em>not</em>, quite apart from
+prevailing trends in programming practice, shun the use of <code>goto</code>;</li>
+<li>is, however, somewhat particular about <em>where</em>
+<code>goto</code> may be used (<code>goto</code> may only occur inside a data structure);</li>
+<li>is purely functional (in the sense that it does not allow "side-effectful" updates to values);</li>
+<li>forbids recursion;</li>
+<li>provides but a single looping construct: <code>foreach</code>, which
+applies an expression successively to each value in a data structure;</li>
+<li>is Turing-complete; and</li>
+<li>boasts an argument-less macro expansion facility (in which recursion is also forbidden.)</li>
+</ul>
+
+<h2>Syntax</h2>
+
+<p>The syntax for identifiers draws from the best parts of the esteemed languages BASIC and Perl.
+Like Perl, all identifiers must be preceded by a <code>$</code> symbol, and like BASIC,
+all identifiers must be followed by a <code>$</code> symbol.  Well, OK, that's for strings anyway, but we don't
+care about their types really, so we use <code>$</code> for everything.  (Also, studies show that this syntax can help
+serious TeX addicts from "bugging out".)</p>
+
+<p>A nice practical upshot of this is that identifier names may contain any characters whatsoever
+(excepting <code>$</code>), including whitespace.</p>
+
+<p>Because of this, the syntax for string literals can be, and is, derived from the syntax for identifiers.
+A string literal is given by a <code>~</code> followed by an identifier; the textual content of the
+name of the identifier is used as the content of the string literal.  A string literal consisting of a single
+<code>$</code> symbol is given by <code>~~</code>.</p>
+
+<p>Many find the syntax for labels to be quite sumilar to that for identifiers.  (Some even find it to
+be quite similar.)  Labels are preceded and followed by <code>:</code> symbols, and may contain
+any symbol except for <code>:</code>.</p>
+
+<p>Syntax for binary operations follows somewhat in the footsteps of the identifier syntax.  It is a
+combination of prefix, infix, and postfix syntax, where the two terms must be preceeded, followed,
+and seperated by the same symbol.  We call this notation <em>panfix</em>.  It is perhaps worth noting that, like
+postfix, panfix does not require the deployment of arcane contrivances such as <em>parentheses</em>
+to override a default operator precedence.  At the same time, panfix allows terms to be specified
+in the same order and manner as infix, an unquestionably natural and intuitive notation to those
+who have become accustomed to it.</p>
+
+<p>So, we give some examples:</p>
+
+<pre>*+1+2+*3*
+&amp;~$The shoes are $&amp;&amp;~~&amp;~$9.99 a pair.$&amp;&amp;</pre>
+
+<p>The first example might be stated as (1+2)*3 in conventional, icky parenthesis-ful notation, and evaluates to 9.
+The second evaluates to the string "The shoes are $9.99 a pair."</p>
+
+<p>There are no unary operators in Quylthulg.  (Note that <code>~</code> isn't really a unary operator, actually not an operator at all,
+because it must be followed by an identifier, not an
+expression.  Well, maybe it's a special kind of operator then, an identifier-operator perhaps.  But you see what I'm getting
+at, don't you?  Hopefully not.)</p>
+
+<p>There is a special 6-ary operator, <code>foreach</code>.  It has its own syntax which will
+be covered below.</p>
+
+<h2>Data Types</h2>
+
+<h3>Strings and Integers</h3>
+
+<p>Yes.  Also a special type called <code>abort</code>, of which there is a single value <code>abort</code>,
+which you'll learn about later.</p>
+
+<h3>Lists</h3>
+
+<p>The sole data structure of note in Quylthulg is the list.  Lists are essentially identical
+to those found in other functional languages such as Scheme: they are either the
+special value <code>null</code>, which suggests an empty list, or they consist of a <code>cons</code>
+cell, which is a pair of two other values.  By convention, the first of this pair
+is the value of this list node, and the second is a sublist (a <code>null</code>
+or a <code>cons</code>) which represents the rest of this list.</p>
+
+<p>The value of a list node may be any value: a scalar such as an integer or a string, another (embedded sub)list,
+or the special value <code>abort</code>.  <code>cons</code> cells are constructed by the <code>,</code>
+panfix operator.  Some examples follow:</p>
+
+<pre>,1,,2,,3,null,,,
+,1,,2,3,,</pre>
+
+<p>The first example constructs a proper list.
+So-called "improper" lists, which purely by convention
+do not end with <code>null</code>, can also be constructed: that's the second example.</p>
+
+<p>When all of the terms involved are literal constants embedded in the program text,
+there is a shorthand syntax for these list expressions, stolen from the Prolog/Erlang school:</p>
+
+<pre>[1, 2, 3]
+[1, 2 | 3]</pre>
+
+<p>Note, however, that <code>[]</code> is not shorthand for <code>null</code>.
+Note also that when this syntax is used, all values <em>must</em> be literal constants:
+there will be no tolerance for variables.  There will, however, be tolerance for <code>goto</code>s and
+labels; see below for more on that.</p>
+
+<h3>Cyclic Lists</h3>
+
+<p>Labels and the <code>goto</code> construct enable the
+definition of cyclic data structures like so:</p>
+
+<pre>:A:[1, 2, 3, goto $A$]
+:B:[1, 2, :C:[3, 4, goto $B$], 5, 6, goto $C$]</pre>
+
+<p>Note that this can only be done in literal constant data structure expressions, not in
+<code>,</code> (<code>cons</code>ing) operations or expression involving a variable.  This is to avoid the
+dynamic construction of labelled terms, which just a tad mind-bending and which I've decided to save for
+a sequel to Quylthulg, whatever and whenever that might be.  Note also that labels have their own
+syntax during declaration, but (oh so helpfully) insist on being referred to in <code>goto</code>s by the <code>$</code>
+syntax used for identifiers.</p>
+
+<h3>List Operators</h3>
+
+<p>The values contained in a <code>cons</code> cell can be extracted
+by the felicitous use of the binary operators <code>&lt;</code> ('first') and <code>&gt;</code>
+('rest').  For both of these operators, the left-hand side is the <code>cons</code> cell to operate on, and the right-hand
+side is an expression which the operator will evaluate to in the case that it cannot successfully
+extract the value from the <code>cons</code> cell (e.g., the left-hand side is not in fact a <code>cons</code> cell
+but rather something else like a <code>null</code> or a number or a string or <code>abort</code>.</p>
+
+<p>There is also an operator <code>;</code> which appends one list (the right-hand side) onto the end of another
+list (the left-hand side.)  This is probably not strictly necessary, since as we'll see later can probably build something equivalent
+using <code>foreach</code>es and macros, but what the hell, we can afford it.  Party down.</p>
+
+<p>These list operators honour cyclic lists, so that <code>&gt;[:X: 4 | goto :X:]&gt;abort&gt;</code>, to take
+just one instance, evaluates to 4.</p>
+
+<h2>Control Flow</h2>
+
+<p>Quylthulg's sole looping construct, <code>foreach</code>, is a recursing abortable
+"fold" operation.  It is passed a data structure to traverse, an expression
+(called the <em>body</em>) that it will 
+apply to each value it encounters in the traversed data structure,
+and an initial value called the <em>accumulator</em>.
+Inside the body, two identifiers are bound to two values: the value in the data structure that the body is currently
+being applied to, and the value of the current value.  The names of the idenfiers so bound are specified in
+the syntax of the <code>foreach</code> operator.  The value that the
+body evaluates to is used as the accumulator for the next time the body is evaluated, on the next value
+in the data structure.  The value that <code>foreach</code> evaluates
+to is the value of the FINAL accumulator (emphasis mine.)  The full form of this operator is as follows:</p>
+
+<pre>foreach <i>$var$</i> = <i>data-expr</i> with <i>$acc$</i> = <i>initial-expr</i> be <i>loop-expr</i> else be <i>otherwise-expr</i></pre>
+
+<p><code>foreach</code> traverses the data structure in this manner:
+from beginning to end. It is:</p>
+<ul>
+<li><em>recursing</em>, meaning if the current
+element of the list is itself a (sub)list, <code>foreach</code> will
+begin traversing that (sub)list (with the same body and current
+accumulator, natch) instead of passing the (sub)list to the body; and</li>
+<li><em>abortable</em>, meaning that the callback may evaluate to a special
+value <code>abort</code>, which causes traversal of
+the current (sub)list to cease immediately, returning to the traversal
+of the containing list, if any.</li>
+</ul>
+
+<p>If the <i>data-expr</i> evaluates to some value besides a <code>cons</code> cell
+(for example, <code>null</code> or an integer or a string), then the <i>loop-expr</i> is
+ignored and the <i>otherwise-expr</i> is evaluated instead.</p>
+
+<p>As an example,</p>
+
+<pre>
+-foreach $x$ = [2, 3, 4] with $a$ = 1 be *$a$*$x$* else be null-1-
+</pre>
+
+<p>will evaluate to 23.  On the other hand,</p>
+
+<pre>
+foreach $x$ = null with $a$ = 1 be $a$ else be 23
+</pre>
+
+<p>will also evaluate to 23.</p>
+
+<h2>Macro System</h2>
+
+<p>Quylthulg boasts an argument-less macro expansion system.  (Yes, there is no argument about it: it <em>boasts</em> it.  It is quite arrogant, you know.)
+Where-ever text of the form <code>{foo}</code> appears in the source code, the contents of the macro named <code>foo</code>
+are inserted at that point, replacing <code>{foo}</code>.  This process is called the <em>expansion</em> of <code>foo</code>.
+But it gets worse: whereever text of the form <code>{bar}</code> appears in the contents of that macro called <code>foo</code>,
+those too will be replaced by the contents of the macro called <code>bar</code>. And so on.  Three things to note:</p>
+
+<ul>
+<li>If there is no macro called <code>foo</code>, <code>{foo}</code> will not be expanded.</li>
+<li>If <code>{foo}</code> appears in the contents of <code>foo</code>, it will not be expanded.</li>
+<li>Nor will it be expanded if it appears in the contents of <code>foo</code> as the result of expanding some other macro in the contents
+of <code>foo</code>.</li>
+</ul>
+
+<p>(I stand corrected.  That was more like 2.5 things to note.)</p>
+
+<p>Macros can be defined and redefined with the special macro-like form <code>{*[foo][bar]}</code>.  The first text between square
+brackets is the name of the macro being defined; the text between the second square brackets is the contents.  Both texts can contain
+any symbols except unmatched <code>]</code>'s.  i.e. you can put square brackets in these texts as long as they nest properly.</p>
+
+<p>Now you see why we don't need arguments to these macros: you can simply use macros as arguments.  For example,</p>
+
+<pre>{*[SQR][*{X}*{X}*]}{*[X][5]}{SQR}</pre>
+
+<p>uses an "argument macro" called <code>X</code> which it defines as <code>5</code> before calling the
+<code>SQR</code> macro that uses it.</p>
+
+<p>Note that macros are expanded before any scanning or parsing of the program text begins.  Thus they can be used to
+define identifiers, labels, etc.</p>
+
+<h3>Comments</h3>
+
+<p>The macro system also provides a way to insert comments into a Quylthulg program.  It should be noted that there are
+at least three schools of thought on this subject.</p>
+
+<p>The first school (Chilton County High School in Clanton, Alabama) says
+that most comments that programmers write are next to useless anyway (which is absolutely true) so there's no point in
+writing them at all.</p>
+
+<p>The second school (Gonzaga College S.J. in Dublin, Ireland — not to be confused with Gonzaga University
+in Spokane, Washington) considers comments to be valuable <em>as comments</em>, but not as source code.  They
+advocate their use in Quylthulg by the definition of macros that are unlikely to be expanded for obscure syntactical reasons.
+For example, <code>{*[}][This is my comment!]}</code>.  Note that that macro <em>can</em> be expanded in Quylthulg
+using <code>{}}</code>; it's just that the Gonzaga school hopes that you won't do that, and hopes you get a syntax
+error if you try.</p>
+
+<p>The third school (a school of fish) believes that comments
+are valuable, not just as comments, but also as integral (or at least distracting) part of the computation, and champions their use in Quylthulg as string
+literals involved in expressions that are ultimately discarded.  For example, <code>&lt;"Addition is fun!"&lt;+1+2+&lt;</code>.</p>
+
+<h3>Integration with the Rest of the Language</h3>
+
+<p>To dispel the vicious rumours that the macro system used in Quylthulg and the Quylthulg language are really independent
+and separate entities which just <em>happen</em> to be sandwiched together there, we are quick to point out that they are
+bound by two very important means:</p>
+
+<ul>
+<li>At the beginning of the program, at a global scope, the identifier
+<code>$Number of Macros Defined$</code> is bound to an integer constant containing
+the number of unique macros that were defined during macro expansion before the program was parsed.</li>
+<li>The panfix operator <code>%</code> applies macros to a Quylthulg string at runtime.  The expression on the
+left-hand side should evaluate to a string which contains macro definitions.  The expression on the
+right-hand side is the string to expand using these macro definitions.</li>
+</ul>
+
+<h2>Turing-Completeness</h2>
+
+<p>Now, I claim that Quylthulg is Turing-complete — that is, that it can
+compute anything that a Turing machine (or any other Turing-complete system) can.
+I would provide a proof, but since the point of a proof is to dispel doubt, and since
+you have not expressed any doubt so far (at least none that I have been able to observe
+from my vantage point), and since (statistically speaking anyway)
+you believe that fluoride in drinking water promotes dental health,
+that the sun is a giant nuclear furnace, that Wall Street is substantially different
+from Las Vegas, that a low-fat diet is an effective way to lose weight,
+that black holes exist, and that point of the War on Drugs is to stop people from
+harming themselves — well, in light of all that, a proof hardly seems called-for.
+Instead, I shall perform a series of short vignettes, each intended to invoke the spirit
+of a different forest animal or supermarket checkout animal.  Then I shall spray you
+with a dose of a new household aerosol which I have invented and which I am
+marketing under the name "Doubt-B-Gone".</p>
+
+<ul>
+<li>We can use <code>foreach</code> as an if-then-else construct by using lists to represent booleans.
+
+<p>Using <code>null</code> to represent false, and <code>cons</code> anything
+to represent true, we use the <code>else</code> part of <code>foreach</code> to
+accomplish a boolean if-then-else.  We can employ <code>;</code> to get boolean OR and
+nested <code>foreach</code>es to get boolean AND.  (Detailed examples of these
+can be found in the unit tests of the Quylthulg reference interpreter, which is called
+"Qlzqqlzuup, Lord of Flesh".)</p></li>
+
+<li>We can construct an infinite loop by running <code>foreach</code> on a cyclic
+data structure.
+
+<p>For example,</p>
+
+<pre>
+foreach $x$ = :L:[1, 2, 3, goto L] with $a$ = 0 be $x$ else be null
+</pre>
+
+<p>never finishes evaluating, and in the body, <code>$x$</code> takes on the values 1, 2, 3, 1, 2, 3, ... ad infinitum.</p></li>
+
+<li>We can treat the accumulator of a <code>foreach</code> like an unbounded tape, just like on a Turing machine.
+
+<p>We can pass in a <code>cons</code> cell where the first value is a list representing everything
+to the left of the head, and the second value is a list representing everything to the right of the head.
+Moving the head left or right can be accomplished by taking the first (<code>&lt;</code>) off the
+appropriate list and cons (<code>,</code>) it onto the other list.  There are also other ways to
+do it, of course.  The point is that there is no bound specified on the length of a list in Quylthulg.</p></li>
+
+<li>We can, in fact, make <code>foreach</code> act like a <code>while</code> construct.
+
+<p>We just combine the looping forever with an if-then-else which evaluates to <code>abort</code>
+when the condition comes true.</p></li>
+
+<li>We can give <code>foreach</code> a cyclic tree-like data structure which describes the
+finite control of a Turing machine.
+
+<p>Although we don't have to — we could just use nested <code>foreach</code>es to make a lot of
+tests against constant values.</p></li>
+
+<li>We can even make <code>foreach</code> work like <code>let</code> if we need to.
+
+<p>Just bind the accumulator to <code>$Name$</code>, refer to <code>$Name$</code> in the
+body, and ignore the contents of the one-element list.  Or use it to bind two variables in one <code>foreach</code>.</p></li>
+
+</ul>
+
+<p style="color: blue">PHHSHHHHHHHHHHHHHHTt.</p>
+
+<h2>Discussion</h2>
+
+<p>Now I'm hardly the first person to suggest
+using cyclic lists as an equivalent alternative to a general looping construct
+such as <code>while</code>.
+It has long been a <a class="external"
+href="http://www.ccs.neu.edu/home/shivers/newstyle.html">stylish LISP programming
+technique</a>.  However, to comply with the Nietzschean-Calvinist mandate of our society
+(that is, to <em>sustain</em> the <em>progress</em> that will <em>thrust</em> us toward the
+"Perfect Meat at the End of Time" of which Hegel spoke,) we must <em>demonstrate</em> that
+we have <strong>innovated</strong>:</p>
+
+<ul>
+<li>Quylthulg provides <em>only</em> this method of looping; without it, it would not be Turing-complete, and</li>
+<li>Unlike the extant stylish programming techniques, which require side-effecting operations such
+as <code>rplacd</code> to pull off, Quylthulg is a pure functional programming language
+<em>without</em> updatable storage.</li>
+</ul>
+
+<p>Huzzah.</p>
+
+<p>It is somewhat sad to consider just how long Quylthulg took to design and how much of that labour took
+place aboard airplanes.  It is even sadder to consider some of the delusions I was occupied with while designing
+it.  Some of the biggest were the idea that <code>foreach</code> somehow had to be recursable for this to
+work — it doesn't, but I left it in.  For similar reasons I left in <code>;</code>, the append operator.
+And I've already mentioned the headaches with allowing labels and <code>goto</code>s in expressions
+rather than only in literals.</p>
+
+<p>Long live the new flesh, eh?
+<br/>Chris Pressey
+<br/>Seattle, Washington
+<br/>Dec 6, 2008</p>
+
+</body>
+</html>
