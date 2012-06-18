@@ -40,7 +40,7 @@
 
 module Qlzqqlzuup where
 
-import Char
+import Data.Char
 
 -- ============ --
 -- Environments --
