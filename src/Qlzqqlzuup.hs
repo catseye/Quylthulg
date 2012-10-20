@@ -1,5 +1,5 @@
 --
--- Copyright (c)2008-2011 Chris Pressey, Cat's Eye Technologies.
+-- Copyright (c)2008-2012 Chris Pressey, Cat's Eye Technologies.
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
