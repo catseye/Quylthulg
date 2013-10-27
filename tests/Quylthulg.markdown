@@ -9,7 +9,8 @@ Quylthulg Tests
 ---------------
 
     -> Functionality "Interpret Quylthulg Program" is implemented by
-    -> Haskell function Qlzqqlzuup:showRun
+    -> shell command
+    -> "ghc src/Qlzqqlzuup.hs -e "do c <- readFile \"%(test-body-file)\"; putStr $ showRun c""
 
     -> Tests for functionality "Interpret Quylthulg Program"
 

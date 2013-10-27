@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cd src && falderal test ../tests/Quylthulg.markdown
+falderal tests/Quylthulg.markdown
