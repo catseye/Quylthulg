@@ -26,4 +26,6 @@ EOF
 fi
 
 falderal fixture.markdown tests/Quylthulg.markdown
+RESULT=$?
 rm -f fixture.markdown
+exit $RESULT
