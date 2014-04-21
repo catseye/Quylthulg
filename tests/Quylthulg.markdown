@@ -8,10 +8,6 @@ here comes close to what I had in mind.
 Quylthulg Tests
 ---------------
 
-    -> Functionality "Interpret Quylthulg Program" is implemented by
-    -> shell command
-    -> "ghc src/Qlzqqlzuup.hs -e "do c <- readFile \"%(test-body-file)\"; putStr $ showRun c""
-
     -> Tests for functionality "Interpret Quylthulg Program"
 
 Integer expressions.
