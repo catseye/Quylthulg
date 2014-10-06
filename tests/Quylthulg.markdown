@@ -10,6 +10,10 @@ Quylthulg Tests
 
     -> Tests for functionality "Interpret Quylthulg Program"
 
+    -> Functionality "Interpret Quylthulg Program" is implemented by
+    -> shell command
+    -> "bin/qlzqqlzuup %(test-body-file)"
+
 Integer expressions.
 --------------------
 
