@@ -1,5 +1,5 @@
 --
--- Copyright (c)2008-2012 Chris Pressey, Cat's Eye Technologies.
+-- Copyright (c)2008-2015 Chris Pressey, Cat's Eye Technologies.
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 --
 
 --
--- Qlzqqlzuup.hs v2011.0517
+-- Qlzqqlzuup.hs revision 2015.0101
 --
 -- 'Qlzqqlzuup, the Lord of Flesh': Reference interpreter for
 -- The Quylthulg Programming Language

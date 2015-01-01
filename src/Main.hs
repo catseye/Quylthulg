@@ -4,6 +4,11 @@ import System.Environment
 import Qlzqqlzuup
 
 main = do
-    [fileName] <- getArgs
-    c <- readFile fileName
-    putStr $ showRun c
+    args <- getArgs
+    case args of
+        [fileName] -> do
+            c <- readFile fileName
+            putStrLn $ showRun c
+            return ()
+        _ -> do
+            putStrLn "Usage: qlzqqlzuup <filename.quylthulg>"
