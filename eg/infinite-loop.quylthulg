@@ -1,0 +1,1 @@
+foreach $x$ = :L:[1, 2, 3, goto $L$] with $a$ = 0 be $x$ else be null

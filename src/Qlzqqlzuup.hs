@@ -79,9 +79,21 @@ data Term = Int Integer
           | Abort
     deriving (Show, Ord, Eq)
 
+isCons (Cons _ _) = True
+isCons _ = False
+
 follow lenv (Label _ x) = follow lenv x
 follow lenv (Goto label) = follow lenv (findVal lenv label)
 follow lenv y = y
+
+followSplit lenv (Cons first rest) =
+    if (follow lenv first) == first then
+        (first, follow lenv rest)
+    else
+        if isCons (follow lenv first) then
+           followSplit lenv (follow lenv first)
+        else
+           (follow lenv first, follow lenv rest)
 
 --
 -- Terms support a number of operations which require the "meaning" of the
@@ -213,7 +225,9 @@ interpret env lenv (ForEach loopvar listExpr accvar accExpr applyExpr elseExpr) 
             qForEach list acc
     where
         qForEach Null acc = acc
+        qForEach (Label _ x) acc = qForEach x acc
         qForEach (Cons first@(Cons _ _) rest) acc =
+            -- "recursing"
             let
                 first' = follow lenv first
                 deepResult = qForEach first' acc
@@ -221,16 +235,17 @@ interpret env lenv (ForEach loopvar listExpr accvar accExpr applyExpr elseExpr) 
                 nextResult = qForEach rest newAcc
             in
                 follow lenv nextResult
-        qForEach (Cons first rest) acc =
+        qForEach term@(Cons first rest) acc =
             let
-                first' = follow lenv first
+                (first', rest') = followSplit lenv term
                 env' = extendEnv env accvar acc
                 env'' = extendEnv env' loopvar first'
                 result = interpret env'' lenv applyExpr
                 newAcc = follow lenv result
-                nextResult = qForEach rest newAcc
+                nextResult = qForEach rest' newAcc
             in
                 if newAcc == Abort then
+                    -- "abortable"
                     acc
                 else
                     follow lenv nextResult
@@ -267,17 +282,22 @@ mInterpret env lenv (ForEach loopvar listExpr accvar accExpr applyExpr elseExpr)
     where
         mqForEach Null acc =
             return acc
+        mqForEach (Label _ x) acc =
+            mqForEach x acc
         mqForEach (Cons first@(Cons _ _) rest) acc = do
+            -- "recursing"
             deepResult <- mqForEach (follow lenv first) acc
             nextResult <- mqForEach rest (follow lenv deepResult)
             return (follow lenv nextResult)
-        mqForEach (Cons first rest) acc = do
+        mqForEach term@(Cons first rest) acc = do
+            (first', rest') <- do return (followSplit lenv term)
             result <- mInterpret (
-                        extendEnv (extendEnv env accvar acc) loopvar (follow lenv first)
+                        extendEnv (extendEnv env accvar acc) loopvar (follow lenv first')
                       ) lenv applyExpr
             newAcc <- do return (follow lenv result)
-            nextResult <- mqForEach rest newAcc
+            nextResult <- mqForEach rest' newAcc
             return (if newAcc == Abort then
+                        -- "abortable"
                         acc
                     else
                         follow lenv nextResult)

@@ -78,12 +78,12 @@ which will be covered below.
 Data Types
 ----------
 
-### Strings and Integers
+### Strings and Integers ###
 
 Yes. Also a special type called `abort`, of which there is a single
 value `abort`, which you'll learn about later.
 
-### Lists
+### Lists ###
 
 The sole data structure of note in Quylthulg is the list. Lists are
 essentially identical to those found in other functional languages such
@@ -117,7 +117,7 @@ when this syntax is used, all values *must* be literal constants: there
 will be no tolerance for variables. There will, however, be tolerance
 for `goto`s and labels; see below for more on that.
 
-### Cyclic Lists
+### Cyclic Lists ###
 
 Labels and the `goto` construct enable the definition of cyclic data
 structures like so:
@@ -134,7 +134,7 @@ labels have their own syntax during declaration, but (oh so helpfully)
 insist on being referred to in `goto`s by the `$` syntax used for
 identifiers.
 
-### List Operators
+### List Operators ###
 
 The values contained in a `cons` cell can be extracted by the felicitous
 use of the binary operators `<` ('first') and `>` ('rest'). For both of
@@ -180,7 +180,7 @@ end. It is:
     (sub)list, `foreach` will begin traversing that (sub)list (with the
     same body and current accumulator, natch) instead of passing the
     (sub)list to the body; and
--   *abortable*, meaning that the callback may evaluate to a special
+-   *abortable*, meaning that the loop-expr may evaluate to a special
     value `abort`, which causes traversal of the current (sub)list to
     cease immediately, returning to the traversal of the containing
     list, if any.
@@ -315,7 +315,7 @@ the name "Doubt-B-Gone".
 
     For example,
 
-        foreach $x$ = :L:[1, 2, 3, goto L] with $a$ = 0 be $x$ else be null
+        foreach $x$ = :L:[1, 2, 3, goto $L$] with $a$ = 0 be $x$ else be null
 
     never finishes evaluating, and in the body, `$x$` takes on the
     values 1, 2, 3, 1, 2, 3, ... ad infinitum.
