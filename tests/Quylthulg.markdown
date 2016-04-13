@@ -53,6 +53,12 @@ List expressions.
     | >1>null>
     = Null
 
+    | <,1,2,<null<
+    = Int 1
+
+    | >,1,2,>null>
+    = Int 2
+
     | ,1,,2,3,,
     = Cons (Int 1) (Cons (Int 2) (Int 3))
 

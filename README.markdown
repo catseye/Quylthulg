@@ -147,7 +147,7 @@ cell but rather something else like a `null` or a number or a string or
 
 There is also an operator `;` which appends one list (the right-hand
 side) onto the end of another list (the left-hand side.) This is
-probably not strictly necessary, since as we'll see later can probably
+probably not strictly necessary, since as we'll see later we can probably
 build something equivalent using `foreach`es and macros, but what the
 hell, we can afford it. Party down.
 
@@ -168,7 +168,7 @@ idenfiers so bound are specified in the syntax of the `foreach`
 operator. The value that the body evaluates to is used as the
 accumulator for the next time the body is evaluated, on the next value
 in the data structure. The value that `foreach` evaluates to is the
-value of the FINAL accumulator (emphasis mine.) The full form of this
+value of the **final** accumulator (emphasis mine.) The full form of this
 operator is as follows:
 
     foreach $var$ = data-expr with $acc$ = initial-expr be loop-expr else be otherwise-expr
@@ -180,7 +180,7 @@ end. It is:
     (sub)list, `foreach` will begin traversing that (sub)list (with the
     same body and current accumulator, natch) instead of passing the
     (sub)list to the body; and
--   *abortable*, meaning that the loop-expr may evaluate to a special
+-   *abortable*, meaning that the *loop-expr* may evaluate to a special
     value `abort`, which causes traversal of the current (sub)list to
     cease immediately, returning to the traversal of the containing
     list, if any.

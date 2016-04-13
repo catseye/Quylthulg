@@ -1,0 +1,5 @@
+foreach $x$ = [10, 20, 40]
+    with $a$ = ,0,0, be
+        ,+<$a$<0<+1+,+>$a$>0>+$x$+,
+    else be
+        null
