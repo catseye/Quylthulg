@@ -95,6 +95,19 @@ Foreach expressions.
     | foreach $n$=[1,2,3] with $a$=null be ,$n$,$a$, else be null
     = Cons (Int 3) (Cons (Int 2) (Cons (Int 1) Null))
 
+This is how boolean expressions can be built with `foreach`es.
+We take `null` to mean **false** and `[1]` to mean **true**.
+
+Boolean NOT.
+
+    | foreach $n$=null with $a$=null be null else be [1]
+    = Cons (Int 1) Null
+
+    | foreach $n$=[1] with $a$=null be null else be [1]
+    = Null
+
+Boolean OR.
+
     | foreach $n$=;[1];[1]; with $a$=[1] be $a$ else be null
     = Cons (Int 1) Null
 
@@ -107,7 +120,7 @@ Foreach expressions.
     | foreach $n$=;null;null; with $a$=[1] be $a$ else be null
     = Null
 
-This is how boolean expressions can be built with foreaches.
+Boolean AND.
 
     | foreach $n$=[1] with $a$=[1] be
     |   foreach $m$=$a$ with $b$=null be [1]
