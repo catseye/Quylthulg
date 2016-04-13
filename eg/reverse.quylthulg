@@ -1,4 +1,4 @@
-foreach $x$ = [10, 20, 40, 80, 60, 10, 30]
+foreach $x$ = [10, 20, 40, 80]
     with $a$ = null be
         ,$x$,$a$,
     else be

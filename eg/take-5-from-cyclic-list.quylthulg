@@ -4,6 +4,6 @@ foreach $x$ = :L:[10, 20, goto $L$]
             with $r$=99999 be
                 ,,$x$,<$a$<null<,,>>$a$>null>>null>,
             else be
-                $a$
+                abort
     else be
         null

@@ -14,6 +14,10 @@ Quylthulg Tests
     -> shell command
     -> "bin/qlzqqlzuup %(test-body-file)"
 
+    -> Functionality "Interpret Quylthulg Program" is implemented by
+    -> shell command
+    -> "bin/qlzqqlzuup -m %(test-body-file)"
+
 Integer expressions.
 --------------------
 
@@ -145,6 +149,53 @@ Boolean AND.
     |   else be null
     | else be null
     = Null
+
+Some list-processing-type things that you often see in functional
+programming.
+
+Reverse a list.
+
+    | foreach $x$ = [10, 20, 40, 80]
+    |     with $a$ = null be
+    |         ,$x$,$a$,
+    |     else be
+    |         null
+    = Cons (Int 80) (Cons (Int 40) (Cons (Int 20) (Cons (Int 10) Null)))
+
+Find the length and the sum of a list of integers.
+
+    | foreach $x$ = [10, 20, 40]
+    |     with $a$ = ,0,0, be
+    |         ,+<$a$<0<+1+,+>$a$>0>+$x$+,
+    |     else be
+    |         null
+    = Cons (Int 3) (Int 70)
+
+Take the first 3 elements from a list (in reverse order.)
+
+    | foreach $x$ = [10, 20, 40, 80, 60, 10, 30]
+    |     with $a$ = ,null,[1,1,1,1], be
+    |         foreach $n$=>>$a$>null>>null>
+    |             with $r$=99999 be
+    |                 ,,$x$,<$a$<null<,,>>$a$>null>>null>,
+    |             else be
+    |                 abort
+    |     else be
+    |         null
+    = Cons (Cons (Int 40) (Cons (Int 20) (Cons (Int 10) Null))) (Cons (Int 1) Null)
+
+Take the first 5 elements from a cyclic list.
+
+    | foreach $x$ = :L:[10, 20, goto $L$]
+    |     with $a$ = ,null,[1,1,1,1,1,1], be
+    |         foreach $n$=>>$a$>null>>null>
+    |             with $r$=99999 be
+    |                 ,,$x$,<$a$<null<,,>>$a$>null>>null>,
+    |             else be
+    |                 abort
+    |     else be
+    |         null
+    = Cons (Cons (Int 10) (Cons (Int 20) (Cons (Int 10) (Cons (Int 20) (Cons (Int 10) Null))))) (Cons (Int 1) Null)
 
 Macros.
 -------
