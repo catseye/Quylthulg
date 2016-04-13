@@ -273,11 +273,9 @@ mInterpret env lenv (BinOp op a b) = do
 mInterpret env lenv (ForEach loopvar listExpr accvar accExpr applyExpr elseExpr) = do
     list <- mInterpret env lenv listExpr
     acc <- mInterpret env lenv accExpr
-    if
-        list == Null
-      then
+    if list == Null then
         mInterpret env lenv elseExpr
-      else
+    else
         mqForEach list acc
     where
         mqForEach Null acc =
@@ -295,12 +293,11 @@ mInterpret env lenv (ForEach loopvar listExpr accvar accExpr applyExpr elseExpr)
                         extendEnv (extendEnv env accvar acc) loopvar (follow lenv first')
                       ) lenv applyExpr
             newAcc <- do return (follow lenv result)
-            nextResult <- mqForEach rest' newAcc
-            return (if newAcc == Abort then
-                        -- "abortable"
-                        acc
-                    else
-                        follow lenv nextResult)
+            if newAcc == Abort then
+                return acc
+            else do
+                nextResult <- mqForEach rest' newAcc
+                return (follow lenv nextResult)
 
 -- =========== --
 -- ParseEngine --
