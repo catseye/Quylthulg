@@ -1,0 +1,9 @@
+foreach $x$ = [10, 20, 40, 80, 60, 10, 30]
+    with $a$ = ,null,[1,1,1,1], be
+        foreach $n$=>>$a$>null>>null>
+            with $r$=99999 be
+                ,,$x$,<$a$<null<,,>>$a$>null>>null>,
+            else be
+                $a$
+    else be
+        null
