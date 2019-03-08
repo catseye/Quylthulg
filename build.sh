@@ -19,5 +19,8 @@ runhugs $DIR/Main.hs $*
 EOF
     chmod 755 bin/$PROG
 else
-    cd src && ghc --make Main.hs -o ../bin/$PROG
+    (cd src && ghc --make Main.hs -o ../bin/$PROG)
 fi
+
+### haste
+(cd src && hastec --make HasteMain.hs -o ../demo/qlzqqlzuup.js)
