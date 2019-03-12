@@ -6,10 +6,10 @@ import Haste.Events
 
 import Qlzqqlzuup
 
-main = withElems ["prog", "result"] driver
+main = withElems ["prog", "result", "run-button"] driver
 
-driver [progElem, resultElem] = do
-    onEvent progElem Change $ \_ -> execute
+driver [progElem, resultElem, runButtonElem] = do
+    onEvent runButtonElem Click $ \_ -> execute
     where
         execute = do
             Just prog <- getValue progElem
