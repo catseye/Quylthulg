@@ -2,25 +2,16 @@
 
 PROG=qlzqqlzuup
 
-if [ x`which ghc` = x -a x`which runhugs` = x ]; then
-    echo "Neither ghc nor runhugs found on search path."
-    exit 1
-fi
-
-mkdir -p bin
-
-if [ x`which ghc` = x -o ! x$USE_HUGS = x ]; then
-    # create script to run with Hugs
-    cat >bin/$PROG <<'EOF'
-#!/bin/sh
-THIS=`realpath $0`
-DIR=`dirname $THIS`/../src
-runhugs $DIR/Main.hs $*
-EOF
-    chmod 755 bin/$PROG
-else
+if command -v ghc >/dev/null 2>&1; then
+    echo "building $PROG with ghc"
     (cd src && ghc --make Main.hs -o ../bin/$PROG)
+else
+    echo "ghc not found, not building $PROG"
 fi
 
-### haste
-(cd src && hastec --make HasteMain.hs -o ../demo/qlzqqlzuup.js)
+if command -v hastec >/dev/null 2>&1; then
+    echo "building $PROG.js with hastec"
+    (cd src && hastec --make HasteMain.hs -o ../demo/$PROG.js)
+else
+    echo "hastec not found, not building $PROG.js"
+fi
