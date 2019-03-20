@@ -1,5 +1,0 @@
-#!/bin/sh
-
-THIS=`realpath $0`
-DIR=`dirname $THIS`/../src
-( runhaskell -i$DIR $DIR/Main.hs $* )

@@ -3,10 +3,10 @@
 PROG=qlzqqlzuup
 
 if command -v ghc >/dev/null 2>&1; then
-    echo "building $PROG with ghc"
-    (cd src && ghc --make Main.hs -o ../bin/$PROG)
+    echo "building $PROG.exe with ghc"
+    (cd src && ghc --make Main.hs -o ../bin/$PROG.exe)
 else
-    echo "ghc not found, not building $PROG"
+    echo "ghc not found, not building $PROG.exe"
 fi
 
 if command -v hastec >/dev/null 2>&1; then

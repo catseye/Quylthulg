@@ -1,5 +1,5 @@
 *.hi
 *.o
 *.jsmod
-bin/qlzqqlzuup
+bin/*.exe
 demo/qlzqqlzuup.js
