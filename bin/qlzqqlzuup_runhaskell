@@ -2,4 +2,4 @@
 
 THIS=`realpath $0`
 DIR=`dirname $THIS`/../src
-runhugs $DIR/Main.hs $*
+( runhaskell -i$DIR $DIR/Main.hs $* )
