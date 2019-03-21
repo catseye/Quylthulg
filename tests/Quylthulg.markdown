@@ -5,18 +5,7 @@ This test suite is written in the format of Falderal 0.7.  It is far from
 exhaustive, but provides a basic sanity check that the language I've designed
 here comes close to what I had in mind.
 
-Quylthulg Tests
----------------
-
     -> Tests for functionality "Interpret Quylthulg Program"
-
-    -> Functionality "Interpret Quylthulg Program" is implemented by
-    -> shell command
-    -> "bin/qlzqqlzuup %(test-body-file)"
-
-    -> Functionality "Interpret Quylthulg Program" is implemented by
-    -> shell command
-    -> "bin/qlzqqlzuup -m %(test-body-file)"
 
 Integer expressions.
 --------------------
