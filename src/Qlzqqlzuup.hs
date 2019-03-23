@@ -95,6 +95,18 @@ followSplit lenv (Cons first rest) =
         else
            (follow lenv first, follow lenv rest)
 
+formatTerm (Int i)     = show i
+formatTerm (Str s)     = "$" ++ s ++ "$" -- not quite (ignores quoting), but close enough
+formatTerm (Cons h t)  = "[" ++ (formatTerm h) ++ formatTail t
+formatTerm Null        = "null"
+formatTerm (Label s t) = ":" ++ s ++ ":" ++ (formatTerm t)
+formatTerm (Goto s)    = "goto " ++ (formatTerm (Str s))
+formatTerm Abort       = "abort"
+
+formatTail Null        = "]"
+formatTail (Cons h t)  = "," ++ (formatTerm h) ++ formatTail t
+formatTail x           = "|" ++ formatTerm x ++ "]"
+
 --
 -- Terms support a number of operations which require the "meaning" of the
 -- term, which may not be available in the term itself, since the term
@@ -609,7 +621,7 @@ run program =
     in
         result
 
-showRun = show . run
+showRun = formatTerm . run
 
 mrun :: String -> IO Term
 
@@ -619,5 +631,5 @@ mrun program = do
     lenv <- return (collectExprLabels expr)
     env <- return (initialEnv expansions)
     result <- mInterpret env lenv expr
-    print result
+    putStr (formatTerm result)
     return result
