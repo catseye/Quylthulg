@@ -23,7 +23,7 @@ String expressions.
 -------------------
 
     | &~$Shoes are $&&~~&~$4.99 a pair$&&
-    = $Shoes are $4.99 a pair$
+    = ~$Shoes are $4.99 a pair$
 
 List expressions.
 -----------------
@@ -199,16 +199,16 @@ Macros.
     = 25
 
     | {*[}][This is my comment!]}~${}}$
-    = $This is my comment!$
+    = ~$This is my comment!$
 
     | {*[Dave][3]}{*[Emily][4]}$Number of Macros Defined$
     = 2
 
     | &~${$&~$*[S][T]}$&
-    = ${*[S][T]}$
+    = ~${*[S][T]}$
 
     | &~${$&~$S}$&
-    = ${S}$
+    = ~${S}$
 
     | %&~${$&~$*[S][T]}$&%&~${$&~$S}$&%
-    = $T$
+    = ~$T$

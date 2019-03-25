@@ -96,16 +96,18 @@ followSplit lenv (Cons first rest) =
            (follow lenv first, follow lenv rest)
 
 formatTerm (Int i)     = show i
-formatTerm (Str s)     = "$" ++ s ++ "$" -- not quite (ignores quoting), but close enough
+formatTerm (Str s)     = "~" ++ formatIdent s
 formatTerm (Cons h t)  = "[" ++ (formatTerm h) ++ formatTail t
 formatTerm Null        = "null"
 formatTerm (Label s t) = ":" ++ s ++ ":" ++ (formatTerm t)
-formatTerm (Goto s)    = "goto " ++ (formatTerm (Str s))
+formatTerm (Goto s)    = "goto " ++ (formatIdent s)
 formatTerm Abort       = "abort"
 
 formatTail Null        = "]"
 formatTail (Cons h t)  = "," ++ (formatTerm h) ++ formatTail t
 formatTail x           = "|" ++ formatTerm x ++ "]"
+
+formatIdent s          = "$" ++ s ++ "$" -- not quite (ignores quoting), but close enough
 
 --
 -- Terms support a number of operations which require the "meaning" of the
