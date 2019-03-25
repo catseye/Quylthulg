@@ -81,7 +81,7 @@ data Term = Int Integer
 
 instance Show Term where
     show (Int i)     = show i
-    show (Str s)     = "~" ++ "$" ++ s ++ "$"
+    show (Str s)     = "~" ++ (if elem '$' s then (show s) else "$" ++ s ++ "$")
     show (Cons h t)  = "[" ++ show h ++ showTail t
         where showTail Null        = "]"
               showTail (Cons h t)  = "," ++ show h ++ showTail t
