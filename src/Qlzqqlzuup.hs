@@ -77,7 +77,20 @@ data Term = Int Integer
           | Label String Term
           | Goto String
           | Abort
-    deriving (Show, Ord, Eq)
+    deriving (Ord, Eq)
+
+instance Show Term where
+    show (Int i)     = show i
+    show (Str s)     = "~" ++ "$" ++ s ++ "$"
+    show (Cons h t)  = "[" ++ show h ++ showTail t
+        where showTail Null        = "]"
+              showTail (Cons h t)  = "," ++ show h ++ showTail t
+              showTail x           = "|" ++ show x ++ "]"
+    show Null        = "null"
+    show (Label s t) = ":" ++ s ++ ":" ++ show t
+    show (Goto s)    = "goto " ++ "$" ++ s ++ "$"
+    show Abort       = "abort"
+
 
 isCons (Cons _ _) = True
 isCons _ = False
@@ -95,19 +108,6 @@ followSplit lenv (Cons first rest) =
         else
            (follow lenv first, follow lenv rest)
 
-formatTerm (Int i)     = show i
-formatTerm (Str s)     = "~" ++ formatIdent s
-formatTerm (Cons h t)  = "[" ++ (formatTerm h) ++ formatTail t
-formatTerm Null        = "null"
-formatTerm (Label s t) = ":" ++ s ++ ":" ++ (formatTerm t)
-formatTerm (Goto s)    = "goto " ++ (formatIdent s)
-formatTerm Abort       = "abort"
-
-formatTail Null        = "]"
-formatTail (Cons h t)  = "," ++ (formatTerm h) ++ formatTail t
-formatTail x           = "|" ++ formatTerm x ++ "]"
-
-formatIdent s          = "$" ++ s ++ "$" -- not quite (ignores quoting), but close enough
 
 --
 -- Terms support a number of operations which require the "meaning" of the
@@ -623,7 +623,7 @@ run program =
     in
         result
 
-showRun = formatTerm . run
+showRun = show . run
 
 mrun :: String -> IO Term
 
@@ -633,5 +633,5 @@ mrun program = do
     lenv <- return (collectExprLabels expr)
     env <- return (initialEnv expansions)
     result <- mInterpret env lenv expr
-    putStr (formatTerm result)
+    putStr $ show result
     return result
