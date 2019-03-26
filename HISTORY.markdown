@@ -69,3 +69,5 @@ This was done to make the output, if not more readable, then more idiomatic
 Since the language doesn't really define how the result of a Quylthulg
 program should be represented, this version number of the language remains
 unchanged.
+
+Also fixed a typo in the README.
