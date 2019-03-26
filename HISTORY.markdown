@@ -70,4 +70,4 @@ Since the language doesn't really define how the result of a Quylthulg
 program should be represented, this version number of the language remains
 unchanged.
 
-Also fixed a typo in the README.
+Also fixed a couple of typos in the README.
