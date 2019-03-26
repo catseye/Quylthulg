@@ -5,15 +5,6 @@ This test suite is written in the format of Falderal 0.7.  It is far from
 exhaustive, but provides a basic sanity check that the language I've designed
 here comes close to what I had in mind.
 
-Note that, until March 2019, the Quylthulg reference interpreter displayed
-the final result of running a Quylthulg program as a standard derived `show`
-representation of its internal Haskell data structure.  After March 2019,
-it formats the result as a literal term in Quylthulg's concrete syntax.
-Such terms can be round-tripped: when treated as Quylthulg programs themselves,
-they will evaluate to themselves.  (This is true in almost all cases.
-Discovering the one case where it is not true is left as an exercise for the
-reader.)
-
     -> Tests for functionality "Interpret Quylthulg Program"
 
 Integer expressions.
