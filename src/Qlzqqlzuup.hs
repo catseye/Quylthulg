@@ -31,7 +31,7 @@
 --
 
 --
--- Qlzqqlzuup.hs revision 2015.0101
+-- Qlzqqlzuup.hs revision 2019.0326
 --
 -- 'Qlzqqlzuup, the Lord of Flesh': Reference interpreter for
 -- The Quylthulg Programming Language
@@ -107,7 +107,6 @@ followSplit lenv (Cons first rest) =
            followSplit lenv (follow lenv first)
         else
            (follow lenv first, follow lenv rest)
-
 
 --
 -- Terms support a number of operations which require the "meaning" of the
@@ -633,5 +632,5 @@ mrun program = do
     lenv <- return (collectExprLabels expr)
     env <- return (initialEnv expansions)
     result <- mInterpret env lenv expr
-    putStr $ show result
+    print result
     return result
