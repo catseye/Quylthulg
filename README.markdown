@@ -259,9 +259,9 @@ won't do that, and hopes you get a syntax error if you try.
 
 The third school (a school of fish) believes that comments are valuable,
 not just as comments, but also as integral (or at least distracting)
-part of the computation, and champions their use in Quylthulg as string
+parts of the computation, and champions their use in Quylthulg as string
 literals involved in expressions that are ultimately discarded. For
-example, `<"Addition is fun!"<+1+2+<`.
+example, `<~$Addition is fun!$<+1+2+<`.
 
 ### Integration with the Rest of the Language
 

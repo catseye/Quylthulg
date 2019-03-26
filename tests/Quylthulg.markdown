@@ -11,82 +11,85 @@ Integer expressions.
 --------------------
 
     | 5
-    = Int 5
+    = 5
 
     | +6+9+
-    = Int 15
+    = 15
 
     | +1+*7*-8-1-*+
-    = Int 50
+    = 50
 
 String expressions.
 -------------------
 
+    | ~$Hello, world!$
+    = ~$Hello, world!$
+
     | &~$Shoes are $&&~~&~$4.99 a pair$&&
-    = Str "Shoes are $4.99 a pair"
+    = ~"Shoes are $4.99 a pair"
 
 List expressions.
 -----------------
 
     | [1,2,3]
-    = Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Null))
+    = [1,2,3]
 
     | [1,2|3]
-    = Cons (Int 1) (Cons (Int 2) (Int 3))
+    = [1,2|3]
 
     | <[1,2|3]<abort<
-    = Int 1
+    = 1
 
     | <1<abort<
-    = Abort
+    = abort
 
     | >[1,2|3]>abort>
-    = Cons (Int 2) (Int 3)
+    = [2|3]
 
     | >1>null>
-    = Null
+    = null
 
     | <,1,2,<null<
-    = Int 1
+    = 1
 
     | >,1,2,>null>
-    = Int 2
+    = 2
 
     | ,1,,2,3,,
-    = Cons (Int 1) (Cons (Int 2) (Int 3))
+    = [1,2|3]
 
     | ;[1,2];[3];
-    = Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Null))
+    = [1,2,3]
 
     | ;[1,2];3;
-    = Cons (Int 1) (Cons (Int 2) (Int 3))
+    = [1,2|3]
 
     | ;null;null;
-    = Null
+    = null
 
     | ;[1];null;
-    = Cons (Int 1) Null
+    = [1]
 
     | ;null;[1];
-    = Cons (Int 1) Null
+    = [1]
 
 Labels and gotos.
 -----------------
 
     | :A:goto$A$
-    = Label "A" (Goto "A")
+    = :A:goto $A$
 
 Foreach expressions.
 --------------------
 
     | foreach $n$=[7,2,3] with $a$=0 be +$a$+$n$+ else be abort
-    = Int 12
+    = 12
 
     | foreach $n$=null with $a$=0 be +$a$+$n$+ else be abort
-    = Abort
+    = abort
 
     | foreach $n$=[1,2,3] with $a$=null be ,$n$,$a$, else be null
-    = Cons (Int 3) (Cons (Int 2) (Cons (Int 1) Null))
+    = [3,2,1]
 
 This is how boolean expressions can be built with `foreach`es.
 We take `null` to mean **false** and `[1]` to mean **true**.
@@ -94,24 +97,24 @@ We take `null` to mean **false** and `[1]` to mean **true**.
 Boolean NOT.
 
     | foreach $n$=null with $a$=null be null else be [1]
-    = Cons (Int 1) Null
+    = [1]
 
     | foreach $n$=[1] with $a$=null be null else be [1]
-    = Null
+    = null
 
 Boolean OR.
 
     | foreach $n$=;[1];[1]; with $a$=[1] be $a$ else be null
-    = Cons (Int 1) Null
+    = [1]
 
     | foreach $n$=;null;[1]; with $a$=[1] be $a$ else be null
-    = Cons (Int 1) Null
+    = [1]
 
     | foreach $n$=;[1];null; with $a$=[1] be $a$ else be null
-    = Cons (Int 1) Null
+    = [1]
 
     | foreach $n$=;null;null; with $a$=[1] be $a$ else be null
-    = Null
+    = null
 
 Boolean AND.
 
@@ -119,25 +122,25 @@ Boolean AND.
     |   foreach $m$=$a$ with $b$=null be [1]
     |   else be null
     | else be null
-    = Cons (Int 1) Null
+    = [1]
 
     | foreach $n$=null with $a$=[1] be
     |   foreach $m$=$a$ with $b$=null be [1]
     |   else be null
     | else be null
-    = Null
+    = null
 
     | foreach $n$=[1] with $a$=null be
     |   foreach $m$=$a$ with $b$=null be [1]
     |   else be null
     | else be null
-    = Null
+    = null
 
     | foreach $n$=null with $a$=null be
     |   foreach $m$=$a$ with $b$=null be [1]
     |   else be null
     | else be null
-    = Null
+    = null
 
 Some list-processing-type things that you often see in functional
 programming.
@@ -149,7 +152,7 @@ Reverse a list.
     |         ,$x$,$a$,
     |     else be
     |         null
-    = Cons (Int 80) (Cons (Int 40) (Cons (Int 20) (Cons (Int 10) Null)))
+    = [80,40,20,10]
 
 Find the length and the sum of a list of integers.
 
@@ -158,7 +161,7 @@ Find the length and the sum of a list of integers.
     |         ,+<$a$<0<+1+,+>$a$>0>+$x$+,
     |     else be
     |         null
-    = Cons (Int 3) (Int 70)
+    = [3|70]
 
 Take the first 3 elements from a list (in reverse order.)
 
@@ -171,7 +174,7 @@ Take the first 3 elements from a list (in reverse order.)
     |                 abort
     |     else be
     |         null
-    = Cons (Cons (Int 40) (Cons (Int 20) (Cons (Int 10) Null))) (Cons (Int 1) Null)
+    = [[40,20,10],1]
 
 Take the first 5 elements from a cyclic list.
 
@@ -184,31 +187,31 @@ Take the first 5 elements from a cyclic list.
     |                 abort
     |     else be
     |         null
-    = Cons (Cons (Int 10) (Cons (Int 20) (Cons (Int 10) (Cons (Int 20) (Cons (Int 10) Null))))) (Cons (Int 1) Null)
+    = [[10,20,10,20,10],1]
 
 Macros.
 -------
 
     | {*[Five][5]}{Five}
-    = Int 5
+    = 5
 
     | {*[(A][1]}+{(A}+4+
-    = Int 5
+    = 5
 
     | {*[SQR][*{X}*{X}*]}{*[X][5]}{SQR}
-    = Int 25
+    = 25
 
     | {*[}][This is my comment!]}~${}}$
-    = Str "This is my comment!"
+    = ~$This is my comment!$
 
     | {*[Dave][3]}{*[Emily][4]}$Number of Macros Defined$
-    = Int 2
+    = 2
 
     | &~${$&~$*[S][T]}$&
-    = Str "{*[S][T]}"
+    = ~${*[S][T]}$
 
     | &~${$&~$S}$&
-    = Str "{S}"
+    = ~${S}$
 
     | %&~${$&~$*[S][T]}$&%&~${$&~$S}$&%
-    = Str "T"
+    = ~$T$

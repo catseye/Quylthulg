@@ -31,7 +31,7 @@
 --
 
 --
--- Qlzqqlzuup.hs revision 2015.0101
+-- Qlzqqlzuup.hs revision 2019.0326
 --
 -- 'Qlzqqlzuup, the Lord of Flesh': Reference interpreter for
 -- The Quylthulg Programming Language
@@ -77,7 +77,20 @@ data Term = Int Integer
           | Label String Term
           | Goto String
           | Abort
-    deriving (Show, Ord, Eq)
+    deriving (Ord, Eq)
+
+instance Show Term where
+    show (Int i)     = show i
+    show (Str s)     = "~" ++ (if elem '$' s then (show s) else "$" ++ s ++ "$")
+    show (Cons h t)  = "[" ++ show h ++ showTail t
+        where showTail Null        = "]"
+              showTail (Cons h t)  = "," ++ show h ++ showTail t
+              showTail x           = "|" ++ show x ++ "]"
+    show Null        = "null"
+    show (Label s t) = ":" ++ s ++ ":" ++ show t
+    show (Goto s)    = "goto " ++ "$" ++ s ++ "$"
+    show Abort       = "abort"
+
 
 isCons (Cons _ _) = True
 isCons _ = False
