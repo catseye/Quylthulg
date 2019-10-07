@@ -71,3 +71,13 @@ program should be represented, this version number of the language remains
 unchanged.
 
 Also fixed a couple of typos in the README.
+
+Version 1.0 revision 2019.1008
+------------------------------
+
+The driver script now understands the environment variable `FORCE_HUGS` to
+mean you want to run Qlzqqlzuup using Hugs, even if you have `ghc` available.
+
+Simplified and updated Haste driver code and command-line driver code.
+
+Renamed `.markdown` file extensions to `.md`.
