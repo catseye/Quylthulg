@@ -1,7 +1,11 @@
 module Main where
 
 import System.Environment
+import System.Exit
+import System.IO
+
 import Qlzqqlzuup
+
 
 main = do
     args <- getArgs
@@ -15,4 +19,8 @@ main = do
             putStrLn $ showRun c
             return ()
         _ -> do
-            putStrLn "Usage: qlzqqlzuup [-m] <filename.quylthulg>"
+            abortWith "Usage: qlzqqlzuup [-m] <filename.quylthulg>"
+
+abortWith msg = do
+    hPutStrLn stderr msg
+    exitWith (ExitFailure 1)
