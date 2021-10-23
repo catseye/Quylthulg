@@ -81,3 +81,12 @@ mean you want to run Qlzqqlzuup using Hugs, even if you have `ghc` available.
 Simplified and updated Haste driver code and command-line driver code.
 
 Renamed `.markdown` file extensions to `.md`.
+
+Version 1.0 revision 2021.1023
+------------------------------
+
+The `build.sh` and `clean.sh` scripts were replaced with a `Makefile`
+which uses `command` instead of `which` to locate executables, and which
+works properly with `containerized-hastec` to build the Haste version.
+
+Simplified the format of the LICENSE to make it more machine-readable.
